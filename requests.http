@@ -1,0 +1,70 @@
+### TicketFlash - requisições (VS Code REST Client / IntelliJ HTTP Client)
+### Preencha as variáveis com ids reais (GET /eventos e GET /usuarios).
+
+@host = http://localhost:8000
+@eventoId = COLE_AQUI_O_ID_DO_EVENTO
+@usuarioId = COLE_AQUI_O_ID_DO_USUARIO
+
+### Usuários (apoio)
+GET {{host}}/usuarios
+
+###
+POST {{host}}/usuarios
+Content-Type: application/json
+
+{ "nome": "Novo Usuário", "email": "novo@exemplo.com", "cidade": "São Paulo" }
+
+### Req. 2 - listar eventos (com filtros)
+GET {{host}}/eventos
+
+###
+GET {{host}}/eventos?categoria=show&cidade=São Paulo
+
+### Req. 2 - criar evento
+POST {{host}}/eventos
+Content-Type: application/json
+
+{
+  "nome": "Show de Teste",
+  "categoria": "show",
+  "data": "2026-12-20T21:00:00",
+  "local": { "cidade": "São Paulo", "endereco": "Rua Exemplo, 100" },
+  "atracoes": ["Banda X"],
+  "setores": [
+    { "nome": "Pista", "preco": 100, "capacidade": 200 },
+    { "nome": "VIP", "preco": 300, "capacidade": 20 }
+  ]
+}
+
+### Req. 5 - buscar evento (rode duas vezes: "banco" e depois "cache")
+GET {{host}}/eventos/{{eventoId}}
+
+### Req. 2/9 - atualizar evento (invalida o cache)
+PUT {{host}}/eventos/{{eventoId}}
+Content-Type: application/json
+
+{ "nome": "Nome Atualizado" }
+
+### Req. 2/9 - remover evento (invalida o cache)
+DELETE {{host}}/eventos/{{eventoId}}
+
+### Req. 7 - ranking top 5
+GET {{host}}/eventos/ranking
+
+### Req. 4 - faturamento por evento
+GET {{host}}/relatorios/faturamento
+
+### Req. 4 - ocupação por setor
+GET {{host}}/relatorios/ocupacao/{{eventoId}}
+
+### Req. 6/8/10 - criar reserva (repita 11x para ver o 429)
+POST {{host}}/reservas
+Content-Type: application/json
+
+{ "usuarioId": "{{usuarioId}}", "eventoId": "{{eventoId}}", "setor": "Pista", "quantidade": 2 }
+
+### Req. 10 - confirmar pedido (410 se a reserva expirou)
+POST {{host}}/pedidos/confirmar
+Content-Type: application/json
+
+{ "usuarioId": "{{usuarioId}}", "eventoId": "{{eventoId}}", "setor": "Pista" }
